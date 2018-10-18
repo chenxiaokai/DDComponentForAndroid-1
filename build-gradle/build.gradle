@@ -1,17 +1,18 @@
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
-ext {
-    bintrayName = 'build-gradle'
-    artifact = bintrayName
-    libraryName = 'component build'
-    libraryDescription = 'gradle plugin for buid component'
-    libraryVersion = "1.2.0"
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+//ext {
+//    bintrayName = 'build-gradle'
+//    artifact = bintrayName
+//    libraryName = 'component build'
+//    libraryDescription = 'gradle plugin for buid component'
+//    libraryVersion = "1.2.0"
+//    licenseName = 'The Apache Software License, Version 2.0'
+//    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//    allLicenses = ["Apache-2.0"]
+//}
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 
 dependencies {
     compile 'com.android.tools.build:gradle:2.3.2'
@@ -22,3 +23,14 @@ dependencies {
     compile localGroovy()
 }
 
+//弄成本地库
+group = "com.chenxiaokai.ddcomponent"
+version "1.0.0"
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
+    }
+}
