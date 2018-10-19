@@ -16,6 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BaseCompRouter implements IComponentRouter {
+
+    /*
+       routeMapper中存放,这是注解 生成的xxxUiRouter中调用
+       "/main" -> MainActivity.class
+       "/shareBook" -> ShareActivity.class
+       "/shareMagazine" -> ShareMessageActivity.class
+     */
     protected Map<String, Class> routeMapper = new HashMap<String, Class>();
 
     protected Map<Class, Map<String, Integer>> paramsMapper = new HashMap<>();

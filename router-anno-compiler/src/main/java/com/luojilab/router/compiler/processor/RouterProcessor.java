@@ -68,8 +68,11 @@ public class RouterProcessor extends AbstractProcessor {
 
     private Logger logger;
 
+    //Filer可以创建文件
     private Filer mFiler;
+    //Types 一个用来处理TypeMirror的工具类
     private Types types;
+    //一个用来处理Element的工具类，源代码的每一个部分都是一个特定类型的Element
     private Elements elements;
 
     private TypeMirror type_String;
@@ -125,6 +128,7 @@ public class RouterProcessor extends AbstractProcessor {
      * generate HostRouterTable.txt
      */
     private void generateRouterTable() {
+        //fileName 在 DDComponentForAndroid-1/UIRouterTable/xxRouterTable.txt 文件
         String fileName = RouteUtils.genRouterTable(host);
         if (FileUtils.createFile(fileName)) {
 
@@ -153,13 +157,16 @@ public class RouterProcessor extends AbstractProcessor {
      */
     private void generateRouterImpl() {
 
+        //claName = com.luojilab.gen.router.xxUiRouter
         String claName = RouteUtils.genHostUIRouterClass(host);
 
         //pkg
         String pkg = claName.substring(0, claName.lastIndexOf("."));
         //simpleName
         String cn = claName.substring(claName.lastIndexOf(".") + 1);
+
         // superClassName
+        //BASECOMPROUTER => com.luojilab.component.componentlib.router.ui.BaseCompRouter
         ClassName superClass = ClassName.get(elements.getTypeElement(BASECOMPROUTER));
 
         MethodSpec initHostMethod = generateInitHostMethod();
@@ -180,12 +187,14 @@ public class RouterProcessor extends AbstractProcessor {
 
     private void parseRouteNodes(Set<? extends Element> routeElements) {
 
+        //ACTIVITY ==> android.app.Activity
         TypeMirror type_Activity = elements.getTypeElement(ACTIVITY).asType();
 
         for (Element element : routeElements) {
             TypeMirror tm = element.asType();
             RouteNode route = element.getAnnotation(RouteNode.class);
 
+            //tm 是否是 type_Activity 的子类
             if (types.isSubtype(tm, type_Activity)) {                 // Activity
                 logger.info(">>> Found activity route: " + tm.toString() + " <<<");
 
@@ -202,9 +211,14 @@ public class RouterProcessor extends AbstractProcessor {
 
                 Map<String, Integer> paramsType = new HashMap<>();
                 Map<String, String> paramsDesc = new HashMap<>();
+
+                //遍历element中的方法和字段
                 for (Element field : element.getEnclosedElements()) {
                     if (field.getKind().isField() && field.getAnnotation(Autowired.class) != null) {
+
+                        //可以看出 Autowired注解需要用在 RouterNode注解的Activity中
                         Autowired paramConfig = field.getAnnotation(Autowired.class);
+                        //filed.getSimpleName() 返回的 变量名
                         paramsType.put(StringUtils.isEmpty(paramConfig.name())
                                 ? field.getSimpleName().toString() : paramConfig.name(), typeUtils.typeExchange(field));
                         paramsDesc.put(StringUtils.isEmpty(paramConfig.name())
@@ -239,6 +253,15 @@ public class RouterProcessor extends AbstractProcessor {
      * create init host method
      */
     private MethodSpec generateInitHostMethod() {
+
+        /*
+          生成的代码
+          @Override
+          public String getHost() {
+            return "app";
+          }
+         */
+
         TypeName returnType = TypeName.get(type_String);
 
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("getHost")
@@ -255,6 +278,18 @@ public class RouterProcessor extends AbstractProcessor {
      * create init map method
      */
     private MethodSpec generateInitMapMethod() {
+
+        /*
+          生的的代码
+          @Override
+          public void initMap() {
+            super.initMap();
+            routeMapper.put("/shareBook",ShareActivity.class);
+            paramsMapper.put(ShareActivity.class,new java.util.HashMap<String, Integer>(){{put("author", 10); put("bookName", 8); }});
+          }
+
+         */
+
         TypeName returnType = TypeName.VOID;
 
         MethodSpec.Builder openUriMethodSpecBuilder = MethodSpec.methodBuilder("initMap")

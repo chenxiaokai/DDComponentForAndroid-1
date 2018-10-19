@@ -52,8 +52,9 @@ class ComCodeTransform extends Transform {
             System.out.println("-------> application is   " + ctClass.getName())
         }
         for (CtClass ctClass : activators) {
-            //applicationlike is   com.mrzhang.reader.applike.ReaderAppLike
-            //applicationlike is   com.mrzhang.share.applike.ShareApplike
+            //applicationlike is   com.luojilab.reader.applike.ReaderAppLike
+            //applicationlike is   com.luojilab.share.applike.ShareApplike
+            //applicationlike is   com.luojilab.share.kotlin.applike.KotlinApplike
             System.out.println("-------> applicationlike is   " + ctClass.getName())
         }
 

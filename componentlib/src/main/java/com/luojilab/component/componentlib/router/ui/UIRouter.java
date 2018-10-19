@@ -69,6 +69,7 @@ public class UIRouter implements IUIRouter {
 
     @Override
     public void registerUI(String host) {
+        //fetch(host) 就是
         IComponentRouter router = fetch(host);
         if (router != null) {
             registerUI(router, PRIORITY_NORMAL);
@@ -166,6 +167,11 @@ public class UIRouter implements IUIRouter {
 
     private IComponentRouter fetch(@NonNull String host) {
 
+        //下面几个xxxUiRouter 都是实现了IComponentRouter接口，就是annotationProcessor 注解生成的
+        // com.luojilab.gen.router.AppUiRouter
+        // com.luojilab.gen.router.ReaderUiRouter  ReaderUiRouter不存在所以放回null
+        // com.luojilab.gen.router.ShareUiRouter
+        // com.luojilab.gen.router.KotlinUiRouter
         String path = RouteUtils.genHostUIRouterClass(host);
 
         if (routerInstanceCache.containsKey(path))

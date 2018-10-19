@@ -104,6 +104,7 @@ public class TypeUtils {
                 if (types.isSubtype(typeMirror, parcelableType)) {  // PARCELABLE
                     return "parcelable";
                 } else {    // For others
+                    //其他类型从这里返回，比如shareComponent中 Author 这个类型
                     return typeMirror.toString();
                 }
         }

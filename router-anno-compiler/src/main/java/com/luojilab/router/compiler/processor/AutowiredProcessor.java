@@ -110,12 +110,17 @@ public class AutowiredProcessor extends AbstractProcessor {
     }
 
     private void generateHelper() throws IOException, IllegalAccessException {
+        //ISYRINGE => com.luojilab.component.componentlib.router.ISyringe
         TypeElement type_ISyringe = elements.getTypeElement(Constants.ISYRINGE);
 
+        //JSON_SERVICE => com.luojilab.component.componentlib.service.JsonService
         TypeElement type_JsonService = elements.getTypeElement(Constants.JSON_SERVICE);
 
+        //ACTIVITY => android.app.Activity
         TypeMirror activityTm = elements.getTypeElement(Constants.ACTIVITY).asType();
+        //FRAGMENT => android.app.Fragment
         TypeMirror fragmentTm = elements.getTypeElement(Constants.FRAGMENT).asType();
+        //FRAGMENT_V4 => android.support.v4.app.Fragment
         TypeMirror fragmentTmV4 = elements.getTypeElement(Constants.FRAGMENT_V4).asType();
 
         // Build input param name.
@@ -123,7 +128,11 @@ public class AutowiredProcessor extends AbstractProcessor {
 
         if (MapUtils.isNotEmpty(parentAndChild)) {
             for (Map.Entry<TypeElement, List<Element>> entry : parentAndChild.entrySet()) {
-                // Build method : 'inject'
+                // Build method :
+                /*
+                    @Override
+                    public void inject(Object target)
+                 */
                 MethodSpec.Builder injectMethodBuilder = MethodSpec.methodBuilder("inject")
                         .addAnnotation(Override.class)
                         .addModifiers(PUBLIC)
@@ -135,6 +144,7 @@ public class AutowiredProcessor extends AbstractProcessor {
                 String qualifiedName = parent.getQualifiedName().toString();
                 String packageName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
 
+                //fileNanme => com.luojilab.share.xxx$$Router$$Autowired
                 String fileName = parent.getSimpleName() + SUFFIX_AUTOWIRED;
 
                 logger.info(">>> Start process " + childs.size() + " field in " + parent.getSimpleName() + " ... <<<");
@@ -269,6 +279,8 @@ public class AutowiredProcessor extends AbstractProcessor {
     private void categories(Set<? extends Element> elements) throws IllegalAccessException {
         if (CollectionUtils.isNotEmpty(elements)) {
             for (Element element : elements) {
+
+                //typeElement 是 element的 父元素
                 TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
 
                 if (element.getModifiers().contains(Modifier.PRIVATE)) {
